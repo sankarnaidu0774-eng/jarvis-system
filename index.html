@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JARVIS AI Assistant</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Segoe UI,Arial,sans-serif;
+    color:#e9faff;
+    min-height:100vh;
+    overflow-x:hidden;
+    background:
+        radial-gradient(circle at 50% 40%,#063e72 0%,transparent 30%),
+        radial-gradient(circle at 80% 80%,#00234b 0%,transparent 35%),
+        linear-gradient(135deg,#010611,#00162b,#010611);
+}
+
+body:before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    opacity:.25;
+    background-image:
+        radial-gradient(#fff 1px,transparent 1px),
+        radial-gradient(#00cfff 1px,transparent 1px);
+    background-size:90px 90px,150px 150px;
+}
+
+/* ================= SIDEBAR ================= */
+
+.app{
+    min-height:100vh;
+    display:flex;
+}
+
+.sidebar{
+    width:235px;
+    padding:18px 14px;
+    background:rgba(0,12,30,.88);
+    border-right:1px solid rgba(0,190,255,.35);
+    backdrop-filter:blur(15px);
+    z-index:5;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:5px 8px 22px;
+}
+
+.logo-circle{
+    width:43px;
+    height:43px;
+    border:2px solid #00d5ff;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    color:#00eaff;
+    font-size:22px;
+    box-shadow:0 0 22px #008cff;
+}
+
+.logo h1{
+    letter-spacing:2px;
+    font-size:21px;
+}
+
+.logo span{
+    color:#35ceff;
+    font-size:10px;
+}
+
+.nav{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+}
+
+.nav button{
+    border:0;
+    color:#ccefff;
+    background:transparent;
+    text-align:left;
+    padding:11px 13px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.nav button:hover,
+.nav button.active{
+    background:linear-gradient(90deg,#064b89,#0877c5);
+    color:white;
+    box-shadow:0 0 15px rgba(0,160,255,.2);
+}
+
+.icon{
+    display:inline-block;
+    width:27px;
+}
+
+.sync{
+    margin-top:25px;
+    padding:13px;
+    border:1px solid rgba(0,190,255,.3);
+    border-radius:12px;
+    background:rgba(0,40,70,.4);
+}
+
+.sync-title{
+    color:#69dfff;
+    font-size:11px;
+    margin-bottom:10px;
+}
+
+.device{
+    font-size:12px;
+    padding:6px 0;
+}
+
+.online{
+    float:right;
+    color:#00ff9d;
+}
+
+/* ================= MAIN ================= */
+
+.main{
+    flex:1;
+    padding:20px;
+    position:relative;
+    z-index:2;
+}
+
+.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+}
+
+.greeting h2{
+    color:#ffbd59;
+    font-size:25px;
+}
+
+.greeting p{
+    font-size:17px;
+    margin-top:5px;
+}
+
+.telugu{
+    color:#1ddcff;
+    margin-top:5px;
+}
+
+.info{
+    display:flex;
+    gap:12px;
+}
+
+.info-card{
+    padding:13px 17px;
+    min-width:135px;
+    border:1px solid rgba(0,190,255,.35);
+    border-radius:12px;
+    background:rgba(0,25,50,.65);
+}
+
+.time{
+    font-size:21px;
+    font-weight:bold;
+}
+
+.small{
+    color:#91bbce;
+    font-size:11px;
+}
+
+/* ================= JARVIS CORE ================= */
+
+.center{
+    height:450px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:relative;
+}
+
+.jarvis-core{
+    width:290px;
+    height:290px;
+    position:relative;
+    display:grid;
+    place-items:center;
+}
+
+.ring{
+    position:absolute;
+    border-radius:50%;
+    border:2px solid #00d5ff;
+    box-shadow:
+        0 0 12px #00aaff,
+        inset 0 0 18px #008cff;
+}
+
+.ring:nth-child(1){
+    width:275px;
+    height:275px;
+    animation:rotate1 10s linear infinite;
+}
+
+.ring:nth-child(2){
+    width:225px;
+    height:225px;
+    border-style:dashed;
+    animation:rotate2 6s linear infinite;
+}
+
+.ring:nth-child(3){
+    width:180px;
+    height:180px;
+    animation:rotate1 4s linear infinite;
+}
+
+@keyframes rotate1{
+    from{transform:rotate(0)}
+    to{transform:rotate(360deg)}
+}
+
+@keyframes rotate2{
+    from{transform:rotate(360deg)}
+    to{transform:rotate(0)}
+}
+
+/* ================= AI FACE ================= */
+
+.core{
+    width:145px;
+    height:145px;
+    border-radius:50%;
+    position:relative;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:
+        radial-gradient(
+            circle,
+            rgba(0,240,255,.32),
+            rgba(0,90,160,.18),
+            transparent 70%
+        );
+    box-shadow:
+        inset 0 0 30px rgba(0,225,255,.45),
+        0 0 30px rgba(0,190,255,.5);
+    z-index:3;
+}
+
+.jarvis-face{
+    width:100px;
+    height:110px;
+    position:relative;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.face-glow{
+    position:absolute;
+    width:105px;
+    height:105px;
+    border-radius:50%;
+    background:radial-gradient(
+        circle,
+        rgba(100,255,255,.35),
+        transparent 70%
+    );
+    filter:blur(8px);
+    animation:facepulse 2s ease-in-out infinite;
+}
+
+@keyframes facepulse{
+    0%,100%{
+        transform:scale(.88);
+        opacity:.6;
+    }
+    50%{
+        transform:scale(1.1);
+        opacity:1;
+    }
+}
+
+.head{
+    width:66px;
+    height:82px;
+    position:relative;
+    border-radius:48% 48% 45% 45%;
+    background:
+        radial-gradient(
+            ellipse at 50% 25%,
+            #d9ffff 0%,
+            #55ddeb 20%,
+            #0b86c2 52%,
+            #01315f 90%
+        );
+    border:1px solid #9fffff;
+    box-shadow:
+        0 0 8px #00eaff,
+        0 0 25px #00bfff,
+        inset 0 0 20px rgba(0,240,255,.8);
+    z-index:2;
+}
+
+.forehead{
+    position:absolute;
+    width:30px;
+    height:7px;
+    top:8px;
+    left:17px;
+    border-radius:50%;
+    background:#d9ffff;
+    filter:blur(1px);
+}
+
+/* Eyes */
+
+.eyes{
+    position:absolute;
+    left:7px;
+    right:7px;
+    top:32px;
+    display:flex;
+    justify-content:space-between;
+}
+
+.eye{
+    width:22px;
+    height:9px;
+    position:relative;
+    background:#eaffff;
+    border-radius:80% 20% 80% 20%;
+    box-shadow:
+        0 0 5px white,
+        0 0 12px #00eaff,
+        0 0 20px #00bfff;
+    transform:skewX(-12deg);
+}
+
+.right-eye{
+    transform:scaleX(-1) skewX(-12deg);
+}
+
+.eye span{
+    position:absolute;
+    width:5px;
+    height:5px;
+    left:8px;
+    top:2px;
+    border-radius:50%;
+    background:white;
+    box-shadow:0 0 10px #00ffff;
+}
+
+/* Nose */
+
+.nose{
+    position:absolute;
+    left:29px;
+    top:41px;
+    width:8px;
+    height:14px;
+    border-left:1px solid white;
+    border-bottom:1px solid #aaffff;
+    transform:rotate(-7deg);
+}
+
+/* Mouth */
+
+.mouth{
+    position:absolute;
+    left:19px;
+    top:59px;
+    width:27px;
+    height:9px;
+    border-bottom:2px solid #d9ffff;
+    border-radius:0 0 50% 50%;
+    box-shadow:0 3px 8px #00eaff;
+}
+
+.mouth span{
+    position:absolute;
+    left:8px;
+    top:3px;
+    width:11px;
+    height:1px;
+    background:white;
+    box-shadow:0 0 7px #00ffff;
+}
+
+/* Jaw */
+
+.jaw{
+    position:absolute;
+    left:14px;
+    bottom:4px;
+    width:38px;
+    height:13px;
+    border-bottom:1px solid #bfffff;
+    border-radius:0 0 50% 50%;
+}
+
+/* Scan line */
+
+.head:after{
+    content:"";
+    position:absolute;
+    left:4px;
+    right:4px;
+    height:1px;
+    background:white;
+    box-shadow:0 0 7px #00ffff;
+    animation:scan 2.5s linear infinite;
+}
+
+@keyframes scan{
+    0%{
+        top:12%;
+        opacity:0;
+    }
+    20%{
+        opacity:1;
+    }
+    80%{
+        opacity:1;
+    }
+    100%{
+        top:88%;
+        opacity:0;
+    }
+}
+
+.core-name{
+    position:absolute;
+    bottom:18px;
+    color:#dfffff;
+    font-size:13px;
+    font-weight:bold;
+    letter-spacing:3px;
+    text-shadow:
+        0 0 6px #00eaff,
+        0 0 15px #00aaff;
+}
+
+/* ================= VOICE ================= */
+
+.voice-area{
+    position:absolute;
+    bottom:4px;
+    text-align:center;
+}
+
+.mic{
+    width:65px;
+    height:65px;
+    border-radius:50%;
+    border:2px solid #00d5ff;
+    background:#002d52;
+    color:white;
+    font-size:25px;
+    cursor:pointer;
+    box-shadow:0 0 25px #008cff;
+    transition:.2s;
+}
+
+.mic:hover{
+    transform:scale(1.1);
+    box-shadow:0 0 45px #00d9ff;
+}
+
+.listening{
+    display:none;
+    color:#00edff;
+    margin-top:8px;
+}
+
+/* ================= CARDS ================= */
+
+.quick{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+}
+
+.card{
+    min-height:110px;
+    padding:18px;
+    border:1px solid rgba(0,180,255,.35);
+    border-radius:13px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(0,60,95,.72),
+            rgba(0,18,38,.75)
+        );
+    cursor:pointer;
+    transition:.25s;
+}
+
+.card:hover{
+    transform:translateY(-4px);
+    border-color:#00d5ff;
+    box-shadow:0 0 25px rgba(0,180,255,.3);
+}
+
+.card-icon{
+    font-size:27px;
+}
+
+.card h3{
+    margin-top:7px;
+    font-size:15px;
+}
+
+.card p{
+    margin-top:5px;
+    color:#9dc8da;
+    font-size:11px;
+}
+
+/* ================= BOTTOM ================= */
+
+.bottom{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:13px;
+    margin-top:14px;
+}
+
+.panel{
+    padding:17px;
+    border:1px solid rgba(0,180,255,.3);
+    border-radius:13px;
+    background:rgba(0,22,43,.72);
+}
+
+.panel h3{
+    color:#4cdbff;
+    margin-bottom:10px;
+}
+
+.message{
+    padding:10px;
+    margin-bottom:7px;
+    border-radius:8px;
+    background:rgba(0,100,170,.18);
+    font-size:13px;
+}
+
+.chat-box{
+    display:flex;
+    gap:7px;
+    margin-top:10px;
+}
+
+.chat-box input{
+    flex:1;
+    padding:10px;
+    border:1px solid #087bb2;
+    border-radius:8px;
+    outline:none;
+    background:#00182c;
+    color:white;
+}
+
+.chat-box button{
+    border:0;
+    border-radius:8px;
+    padding:0 15px;
+    background:#008acb;
+    color:white;
+    cursor:pointer;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:900px){
+
+    .sidebar{
+        width:190px;
+    }
+
+    .quick{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .info{
+        display:none;
+    }
+}
+
+@media(max-width:700px){
+
+    .app{
+        display:block;
+    }
+
+    .sidebar{
+        width:100%;
+        border-right:0;
+        border-bottom:1px solid #075b88;
+    }
+
+    .logo{
+        justify-content:center;
+    }
+
+    .nav{
+        display:grid;
+        grid-template-columns:repeat(5,1fr);
+    }
+
+    .nav button{
+        text-align:center;
+        padding:7px 2px;
+        font-size:9px;
+    }
+
+    .icon{
+        display:block;
+        width:auto;
+        margin-bottom:3px;
+    }
+
+    .sync{
+        display:none;
+    }
+
+    .main{
+        padding:12px;
+    }
+
+    .greeting h2{
+        font-size:19px;
+    }
+
+    .center{
+        height:410px;
+    }
+
+    .jarvis-core{
+        transform:scale(.8);
+    }
+
+    .quick{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .bottom{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+<div class="logo">
+
+    <div class="logo-circle">◉</div>
+
+    <div>
+        <h1>JARVIS</h1>
+        <span>Personal AI Assistant</span>
+    </div>
+
+</div>
+
+<div class="nav">
+
+<button class="active">🏠 <span>Home</span></button>
+
+<button onclick="startVoice()">🎙️ <span>Voice</span></button>
+
+<button onclick="focusChat()">💬 <span>Chat</span></button>
+
+<button onclick="notify('Code Assistant activated')">
+💻 <span>Code Assistant</span>
+</button>
+
+<button>🖥️ <span>Screen Analysis</span></button>
+
+<button>📁 <span>Files & Docs</span></button>
+
+<button>🛠️ <span>Tools</span></button>
+
+<button>📅 <span>Calendar</span></button>
+
+<button>🔔 <span>Reminders</span></button>
+
+<button>⚙️ <span>Settings</span></button>
+
+</div>
+
+<div class="sync">
+
+<div class="sync-title">
+SYNCED DEVICES
+</div>
+
+<div class="device">
+🖥️ Windows 10
+<span class="online">●</span>
+</div>
+
+<div class="device">
+📱 POCO M6 5G
+<span class="online">●</span>
+</div>
+
+</div>
+
+</aside>
+
+
+<!-- MAIN -->
+
+<main class="main">
+
+<div class="top">
+
+<div class="greeting">
+
+<h2>☀️ Good Morning, Sankar</h2>
+
+<p>How can I help you today?</p>
+
+<div class="telugu">
+మీకు ఏ సహాయం కావాలి?
+</div>
+
+</div>
+
+
+<div class="info">
+
+<div class="info-card">
+
+<div class="time" id="clock">
+02:49 PM
+</div>
+
+<div class="small" id="date">
+Sun, 13 Sep 2026
+</div>
+
+</div>
+
+<div class="info-card">
+
+☁️ <b>28°C</b>
+
+<div class="small">
+Partly Cloudy
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- JARVIS -->
+
+<section class="center">
+
+<div class="jarvis-core">
+
+<div class="ring"></div>
+<div class="ring"></div>
+<div class="ring"></div>
+
+
+<div class="core">
+
+<div class="jarvis-face">
+
+<div class="face-glow"></div>
+
+<div class="head">
+
+<div class="forehead"></div>
+
+<div class="eyes">
+
+<div class="eye left-eye">
+<span></span>
+</div>
+
+<div class="eye right-eye">
+<span></span>
+</div>
+
+</div>
+
+<div class="nose"></div>
+
+<div class="mouth">
+<span></span>
+</div>
+
+<div class="jaw"></div>
+
+</div>
+
+</div>
+
+<div class="core-name">
+JARVIS
+</div>
+
+</div>
+
+</div>
+
+
+<div class="voice-area">
+
+<button class="mic" onclick="startVoice()">
+🎙️
+</button>
+
+<div>
+Tap or say <b>"Hey Jarvis"</b>
+</div>
+
+<div class="listening" id="listening">
+🔵 Listening...
+</div>
+
+</div>
+
+</section>
+
+
+<!-- QUICK CARDS -->
+
+<section class="quick">
+
+<div class="card"
+onclick="notify('Code Assistant activated')">
+
+<div class="card-icon">💻</div>
+
+<h3>Code Assistant</h3>
+
+<p>
+Write, debug and explain code in any language.
+</p>
+
+</div>
+
+
+<div class="card"
+onclick="focusChat()">
+
+<div class="card-icon">💬</div>
+
+<h3>Ask Anything</h3>
+
+<p>
+Get answers, ideas and solutions.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="card-icon">📁</div>
+
+<h3>Files & Documents</h3>
+
+<p>
+Read and analyze your files.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="card-icon">✨</div>
+
+<h3>AI Tools</h3>
+
+<p>
+Use advanced AI features.
+</p>
+
+</div>
+
+</section>
+
+
+<!-- BOTTOM -->
+
+<section class="bottom">
+
+<div class="panel">
+
+<h3>🎙️ Voice Conversation</h3>
+
+<div class="message">
+<b>You:</b>
+Hey Jarvis, can you help me?
+</div>
+
+<div class="message">
+<b>Jarvis:</b>
+Sure Sankar. I'm ready to assist you.
+</div>
+
+</div>
+
+
+<div class="panel" id="chatPanel">
+
+<h3>💬 JARVIS Chat</h3>
+
+<div id="chatMessages">
+
+<div class="message">
+<b>JARVIS:</b>
+Hello Sankar! What would you like me to do?
+</div>
+
+</div>
+
+
+<div class="chat-box">
+
+<input
+id="chatInput"
+placeholder="Ask Jarvis anything..."
+onkeydown="if(event.key==='Enter')sendMessage()"
+/>
+
+<button onclick="sendMessage()">
+Send
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+
+<script>
+
+/* CLOCK */
+
+function updateClock(){
+
+    const now = new Date();
+
+    document.getElementById("clock").textContent =
+        now.toLocaleTimeString([],{
+            hour:"2-digit",
+            minute:"2-digit"
+        });
+
+    document.getElementById("date").textContent =
+        now.toLocaleDateString([],{
+            weekday:"short",
+            day:"2-digit",
+            month:"short",
+            year:"numeric"
+        });
+}
+
+setInterval(updateClock,1000);
+updateClock();
+
+
+/* VOICE */
+
+function startVoice(){
+
+    const listening =
+        document.getElementById("listening");
+
+    listening.style.display="block";
+
+    if("speechSynthesis" in window){
+
+        const speech =
+            new SpeechSynthesisUtterance(
+                "Hello Sankar. I am Jarvis. How can I help you?"
+            );
+
+        speech.lang="en-IN";
+
+        window.speechSynthesis.speak(speech);
+    }
+
+    setTimeout(()=>{
+        listening.style.display="none";
+    },4000);
+}
+
+
+/* CHAT */
+
+function focusChat(){
+
+    const input =
+        document.getElementById("chatInput");
+
+    input.focus();
+
+    document
+        .getElementById("chatPanel")
+        .scrollIntoView({
+            behavior:"smooth"
+        });
+}
+
+
+function sendMessage(){
+
+    const input =
+        document.getElementById("chatInput");
+
+    const text =
+        input.value.trim();
+
+    if(!text) return;
+
+    const messages =
+        document.getElementById("chatMessages");
+
+    messages.innerHTML += `
+        <div class="message">
+            <b>You:</b> ${escapeHTML(text)}
+        </div>
+    `;
+
+    input.value="";
+
+    setTimeout(()=>{
+
+        messages.innerHTML += `
+            <div class="message">
+                <b>JARVIS:</b>
+                I received your message. AI backend can be connected here.
+            </div>
+        `;
+
+    },500);
+}
+
+
+/* SECURITY */
+
+function escapeHTML(text){
+
+    const div =
+        document.createElement("div");
+
+    div.textContent=text;
+
+    return div.innerHTML;
+}
+
+
+/* NOTIFICATION */
+
+function notify(message){
+
+    alert("JARVIS: "+message);
+}
+
+</script>
+
+</body>
+</html>
