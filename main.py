@@ -121,33 +121,18 @@ async def handle_call(call: CallSimulate):
     if call.caller_number in WHITELIST_NUMBERS:
         return {"action": "CONNECT_USER", "message": f"{call.caller_name} call chesthunnaru. Connecting!"}
     else:
-        return {"action": "JARVIS_ANSWER", "message": f"Unknown call from {call.caller_number}. JARVIS lift chesi matladuthundi."}
-    class CodeRequest(BaseModel):
+        return {"action": "JARVIS_ANSWER", "message": f"Unknown call from {call.caller_number}. JARVIS lift chesi matladuthundi."}    
+class CodeRequest(BaseModel):
     prompt: str
 
 @app.post("/api/generate-code")
 async def generate_code(req: CodeRequest):
     if llm:
         try:
-            # AI Brain unte idhi run avthundi
-            system_prompt = f"<|system|>\nYou are an expert Python developer. Write the code for the user's request.\n<|user|>\n{req.prompt}\n<|assistant|>\n"
+            system_prompt = f"<|system|>\nYou are an expert Python developer.\n<|user|>\n{req.prompt}\n<|assistant|>\n"
             response = llm(system_prompt, max_tokens=300, stop=["<|user|>"])
-            generated_code = response["choices"][0]["text"].strip()
-            return {"code": generated_code}
+            return {"code": response["choices"][0]["text"].strip()}
         except Exception as e:
-            return {"code": f"# System Error: {str(e)}"}
+            return {"code": f"# Error: {str(e)}"}
     else:
-        # AI Brain offline unte (Fallback Mode)
-        fallback_code = f"""# [JARVIS CODE FORGE - FALLBACK MODE]
-# AI Brain is currently offline due to hardware limits.
-# Here is a basic structural template for: {req.prompt}
-
-def auto_generated_feature():
-    print("Initiating new protocol...")
-    # TODO: Add specific logic here
-    pass
-
-if __name__ == "__main__":
-    auto_generated_feature()
-"""
-        return {"code": fallback_code}
+        return {"code": f"# Fallback Mode for: {req.prompt}\nprint('JARVIS Code Forge Active')"}
