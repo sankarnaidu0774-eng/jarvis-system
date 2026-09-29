@@ -1,1108 +1,1301 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JARVIS AI Assistant</title>
-
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-    font-family:Segoe UI,Arial,sans-serif;
-    color:#e9faff;
-    min-height:100vh;
-    overflow-x:hidden;
-    background:
-        radial-gradient(circle at 50% 40%,#063e72 0%,transparent 30%),
-        radial-gradient(circle at 80% 80%,#00234b 0%,transparent 35%),
-        linear-gradient(135deg,#010611,#00162b,#010611);
-}
-
-body:before{
-    content:"";
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-    opacity:.25;
-    background-image:
-        radial-gradient(#fff 1px,transparent 1px),
-        radial-gradient(#00cfff 1px,transparent 1px);
-    background-size:90px 90px,150px 150px;
-}
-
-/* ================= SIDEBAR ================= */
-
-.app{
-    min-height:100vh;
-    display:flex;
-}
-
-.sidebar{
-    width:235px;
-    padding:18px 14px;
-    background:rgba(0,12,30,.88);
-    border-right:1px solid rgba(0,190,255,.35);
-    backdrop-filter:blur(15px);
-    z-index:5;
-}
-
-.logo{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:5px 8px 22px;
-}
-
-.logo-circle{
-    width:43px;
-    height:43px;
-    border:2px solid #00d5ff;
-    border-radius:50%;
-    display:grid;
-    place-items:center;
-    color:#00eaff;
-    font-size:22px;
-    box-shadow:0 0 22px #008cff;
-}
-
-.logo h1{
-    letter-spacing:2px;
-    font-size:21px;
-}
-
-.logo span{
-    color:#35ceff;
-    font-size:10px;
-}
-
-.nav{
-    display:flex;
-    flex-direction:column;
-    gap:5px;
-}
-
-.nav button{
-    border:0;
-    color:#ccefff;
-    background:transparent;
-    text-align:left;
-    padding:11px 13px;
-    border-radius:10px;
-    cursor:pointer;
-    transition:.25s;
-}
-
-.nav button:hover,
-.nav button.active{
-    background:linear-gradient(90deg,#064b89,#0877c5);
-    color:white;
-    box-shadow:0 0 15px rgba(0,160,255,.2);
-}
-
-.icon{
-    display:inline-block;
-    width:27px;
-}
-
-.sync{
-    margin-top:25px;
-    padding:13px;
-    border:1px solid rgba(0,190,255,.3);
-    border-radius:12px;
-    background:rgba(0,40,70,.4);
-}
-
-.sync-title{
-    color:#69dfff;
-    font-size:11px;
-    margin-bottom:10px;
-}
-
-.device{
-    font-size:12px;
-    padding:6px 0;
-}
-
-.online{
-    float:right;
-    color:#00ff9d;
-}
-
-/* ================= MAIN ================= */
-
-.main{
-    flex:1;
-    padding:20px;
-    position:relative;
-    z-index:2;
-}
-
-.top{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-}
-
-.greeting h2{
-    color:#ffbd59;
-    font-size:25px;
-}
-
-.greeting p{
-    font-size:17px;
-    margin-top:5px;
-}
-
-.telugu{
-    color:#1ddcff;
-    margin-top:5px;
-}
-
-.info{
-    display:flex;
-    gap:12px;
-}
-
-.info-card{
-    padding:13px 17px;
-    min-width:135px;
-    border:1px solid rgba(0,190,255,.35);
-    border-radius:12px;
-    background:rgba(0,25,50,.65);
-}
-
-.time{
-    font-size:21px;
-    font-weight:bold;
-}
-
-.small{
-    color:#91bbce;
-    font-size:11px;
-}
-
-/* ================= JARVIS CORE ================= */
-
-.center{
-    height:450px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    position:relative;
-}
-
-.jarvis-core{
-    width:290px;
-    height:290px;
-    position:relative;
-    display:grid;
-    place-items:center;
-}
-
-.ring{
-    position:absolute;
-    border-radius:50%;
-    border:2px solid #00d5ff;
-    box-shadow:
-        0 0 12px #00aaff,
-        inset 0 0 18px #008cff;
-}
-
-.ring:nth-child(1){
-    width:275px;
-    height:275px;
-    animation:rotate1 10s linear infinite;
-}
-
-.ring:nth-child(2){
-    width:225px;
-    height:225px;
-    border-style:dashed;
-    animation:rotate2 6s linear infinite;
-}
-
-.ring:nth-child(3){
-    width:180px;
-    height:180px;
-    animation:rotate1 4s linear infinite;
-}
-
-@keyframes rotate1{
-    from{transform:rotate(0)}
-    to{transform:rotate(360deg)}
-}
-
-@keyframes rotate2{
-    from{transform:rotate(360deg)}
-    to{transform:rotate(0)}
-}
-
-/* ================= AI FACE ================= */
-
-.core{
-    width:145px;
-    height:145px;
-    border-radius:50%;
-    position:relative;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:
-        radial-gradient(
-            circle,
-            rgba(0,240,255,.32),
-            rgba(0,90,160,.18),
-            transparent 70%
-        );
-    box-shadow:
-        inset 0 0 30px rgba(0,225,255,.45),
-        0 0 30px rgba(0,190,255,.5);
-    z-index:3;
-}
-
-.jarvis-face{
-    width:100px;
-    height:110px;
-    position:relative;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-
-.face-glow{
-    position:absolute;
-    width:105px;
-    height:105px;
-    border-radius:50%;
-    background:radial-gradient(
-        circle,
-        rgba(100,255,255,.35),
-        transparent 70%
-    );
-    filter:blur(8px);
-    animation:facepulse 2s ease-in-out infinite;
-}
-
-@keyframes facepulse{
-    0%,100%{
-        transform:scale(.88);
-        opacity:.6;
-    }
-    50%{
-        transform:scale(1.1);
-        opacity:1;
-    }
-}
-
-.head{
-    width:66px;
-    height:82px;
-    position:relative;
-    border-radius:48% 48% 45% 45%;
-    background:
-        radial-gradient(
-            ellipse at 50% 25%,
-            #d9ffff 0%,
-            #55ddeb 20%,
-            #0b86c2 52%,
-            #01315f 90%
-        );
-    border:1px solid #9fffff;
-    box-shadow:
-        0 0 8px #00eaff,
-        0 0 25px #00bfff,
-        inset 0 0 20px rgba(0,240,255,.8);
-    z-index:2;
-}
-
-.forehead{
-    position:absolute;
-    width:30px;
-    height:7px;
-    top:8px;
-    left:17px;
-    border-radius:50%;
-    background:#d9ffff;
-    filter:blur(1px);
-}
-
-/* Eyes */
-
-.eyes{
-    position:absolute;
-    left:7px;
-    right:7px;
-    top:32px;
-    display:flex;
-    justify-content:space-between;
-}
-
-.eye{
-    width:22px;
-    height:9px;
-    position:relative;
-    background:#eaffff;
-    border-radius:80% 20% 80% 20%;
-    box-shadow:
-        0 0 5px white,
-        0 0 12px #00eaff,
-        0 0 20px #00bfff;
-    transform:skewX(-12deg);
-}
-
-.right-eye{
-    transform:scaleX(-1) skewX(-12deg);
-}
-
-.eye span{
-    position:absolute;
-    width:5px;
-    height:5px;
-    left:8px;
-    top:2px;
-    border-radius:50%;
-    background:white;
-    box-shadow:0 0 10px #00ffff;
-}
-
-/* Nose */
-
-.nose{
-    position:absolute;
-    left:29px;
-    top:41px;
-    width:8px;
-    height:14px;
-    border-left:1px solid white;
-    border-bottom:1px solid #aaffff;
-    transform:rotate(-7deg);
-}
-
-/* Mouth */
-
-.mouth{
-    position:absolute;
-    left:19px;
-    top:59px;
-    width:27px;
-    height:9px;
-    border-bottom:2px solid #d9ffff;
-    border-radius:0 0 50% 50%;
-    box-shadow:0 3px 8px #00eaff;
-}
-
-.mouth span{
-    position:absolute;
-    left:8px;
-    top:3px;
-    width:11px;
-    height:1px;
-    background:white;
-    box-shadow:0 0 7px #00ffff;
-}
-
-/* Jaw */
-
-.jaw{
-    position:absolute;
-    left:14px;
-    bottom:4px;
-    width:38px;
-    height:13px;
-    border-bottom:1px solid #bfffff;
-    border-radius:0 0 50% 50%;
-}
-
-/* Scan line */
-
-.head:after{
-    content:"";
-    position:absolute;
-    left:4px;
-    right:4px;
-    height:1px;
-    background:white;
-    box-shadow:0 0 7px #00ffff;
-    animation:scan 2.5s linear infinite;
-}
-
-@keyframes scan{
-    0%{
-        top:12%;
-        opacity:0;
-    }
-    20%{
-        opacity:1;
-    }
-    80%{
-        opacity:1;
-    }
-    100%{
-        top:88%;
-        opacity:0;
-    }
-}
-
-.core-name{
-    position:absolute;
-    bottom:18px;
-    color:#dfffff;
-    font-size:13px;
-    font-weight:bold;
-    letter-spacing:3px;
-    text-shadow:
-        0 0 6px #00eaff,
-        0 0 15px #00aaff;
-}
-
-/* ================= VOICE ================= */
-
-.voice-area{
-    position:absolute;
-    bottom:4px;
-    text-align:center;
-}
-
-.mic{
-    width:65px;
-    height:65px;
-    border-radius:50%;
-    border:2px solid #00d5ff;
-    background:#002d52;
-    color:white;
-    font-size:25px;
-    cursor:pointer;
-    box-shadow:0 0 25px #008cff;
-    transition:.2s;
-}
-
-.mic:hover{
-    transform:scale(1.1);
-    box-shadow:0 0 45px #00d9ff;
-}
-
-.listening{
-    display:none;
-    color:#00edff;
-    margin-top:8px;
-}
-
-/* ================= CARDS ================= */
-
-.quick{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:12px;
-}
-
-.card{
-    min-height:110px;
-    padding:18px;
-    border:1px solid rgba(0,180,255,.35);
-    border-radius:13px;
-    background:
-        linear-gradient(
-            145deg,
-            rgba(0,60,95,.72),
-            rgba(0,18,38,.75)
-        );
-    cursor:pointer;
-    transition:.25s;
-}
-
-.card:hover{
-    transform:translateY(-4px);
-    border-color:#00d5ff;
-    box-shadow:0 0 25px rgba(0,180,255,.3);
-}
-
-.card-icon{
-    font-size:27px;
-}
-
-.card h3{
-    margin-top:7px;
-    font-size:15px;
-}
-
-.card p{
-    margin-top:5px;
-    color:#9dc8da;
-    font-size:11px;
-}
-
-/* ================= BOTTOM ================= */
-
-.bottom{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:13px;
-    margin-top:14px;
-}
-
-.panel{
-    padding:17px;
-    border:1px solid rgba(0,180,255,.3);
-    border-radius:13px;
-    background:rgba(0,22,43,.72);
-}
-
-.panel h3{
-    color:#4cdbff;
-    margin-bottom:10px;
-}
-
-.message{
-    padding:10px;
-    margin-bottom:7px;
-    border-radius:8px;
-    background:rgba(0,100,170,.18);
-    font-size:13px;
-}
-
-.chat-box{
-    display:flex;
-    gap:7px;
-    margin-top:10px;
-}
-
-.chat-box input{
-    flex:1;
-    padding:10px;
-    border:1px solid #087bb2;
-    border-radius:8px;
-    outline:none;
-    background:#00182c;
-    color:white;
-}
-
-.chat-box button{
-    border:0;
-    border-radius:8px;
-    padding:0 15px;
-    background:#008acb;
-    color:white;
-    cursor:pointer;
-}
-
-/* ================= MOBILE ================= */
-
-@media(max-width:900px){
-
-    .sidebar{
-        width:190px;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#8f3158" />
+  <title>Surprise Mama | Gifts, Surprises & Events in Eluru</title>
+  <meta name="description" content="Surprise Mama, Eluru — thoughtful gifts, birthday surprises, bouquets, chocolate hampers, weddings, anniversaries and event management." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --rose: #8f3158;
+      --rose-dark: #68213e;
+      --rose-soft: #f8e8ee;
+      --cream: #fffaf6;
+      --gold: #c79b62;
+      --ink: #241a1e;
+      --muted: #74666c;
+      --white: #ffffff;
+      --line: #eadde2;
+      --shadow: 0 20px 50px rgba(70, 25, 45, .10);
+      --radius: 24px;
     }
 
-    .quick{
-        grid-template-columns:repeat(2,1fr);
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "DM Sans", sans-serif;
+      color: var(--ink);
+      background: var(--cream);
+      line-height: 1.6;
     }
 
-    .info{
-        display:none;
-    }
-}
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    button, input, select, textarea { font: inherit; }
 
-@media(max-width:700px){
-
-    .app{
-        display:block;
+    .container {
+      width: min(1160px, calc(100% - 40px));
+      margin: auto;
     }
 
-    .sidebar{
-        width:100%;
-        border-right:0;
-        border-bottom:1px solid #075b88;
+    .announcement {
+      background: var(--rose-dark);
+      color: #fff;
+      text-align: center;
+      padding: 9px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .16em;
     }
 
-    .logo{
-        justify-content:center;
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,250,246,.94);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(143,49,88,.08);
     }
 
-    .nav{
-        display:grid;
-        grid-template-columns:repeat(5,1fr);
+    .nav {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
     }
 
-    .nav button{
-        text-align:center;
-        padding:7px 2px;
-        font-size:9px;
+    .logo {
+      font-family: "Playfair Display", serif;
+      color: var(--rose);
+      font-size: 27px;
+      font-weight: 700;
+      white-space: nowrap;
     }
 
-    .icon{
-        display:block;
-        width:auto;
-        margin-bottom:3px;
+    .logo span { color: var(--gold); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #594b51;
     }
 
-    .sync{
-        display:none;
+    .nav-links a:hover { color: var(--rose); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border: 0;
+      cursor: pointer;
+      padding: 13px 20px;
+      border-radius: 999px;
+      font-weight: 700;
+      transition: .25s ease;
     }
 
-    .main{
-        padding:12px;
+    .btn-primary {
+      color: white;
+      background: var(--rose);
+      box-shadow: 0 10px 25px rgba(143,49,88,.18);
     }
 
-    .greeting h2{
-        font-size:19px;
+    .btn-primary:hover { background: var(--rose-dark); transform: translateY(-2px); }
+
+    .btn-light {
+      background: white;
+      color: var(--rose);
+      border: 1px solid var(--line);
     }
 
-    .center{
-        height:410px;
+    .btn-light:hover { border-color: var(--rose); transform: translateY(-2px); }
+
+    .menu-btn {
+      display: none;
+      border: 0;
+      background: transparent;
+      font-size: 27px;
+      cursor: pointer;
+      color: var(--rose);
     }
 
-    .jarvis-core{
-        transform:scale(.8);
+    .hero {
+      padding: 72px 0 56px;
+      background:
+        radial-gradient(circle at 85% 20%, #f9dfe8 0, transparent 31%),
+        radial-gradient(circle at 15% 70%, #f6eadb 0, transparent 28%);
     }
 
-    .quick{
-        grid-template-columns:1fr 1fr;
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.04fr .96fr;
+      align-items: center;
+      gap: 62px;
     }
 
-    .bottom{
-        grid-template-columns:1fr;
+    .eyebrow {
+      color: var(--rose);
+      font-weight: 800;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      font-size: 12px;
+      margin-bottom: 15px;
     }
-}
-</style>
+
+    h1, h2, h3 {
+      font-family: "Playfair Display", serif;
+      line-height: 1.1;
+    }
+
+    h1 {
+      font-size: clamp(44px, 6vw, 76px);
+      letter-spacing: -.035em;
+      max-width: 700px;
+    }
+
+    .hero-copy {
+      color: var(--muted);
+      max-width: 570px;
+      margin: 23px 0 29px;
+      font-size: 17px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hero-image {
+      min-height: 510px;
+      border-radius: 34px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: var(--shadow);
+      background: #eee;
+    }
+
+    .hero-image img {
+      width: 100%;
+      height: 100%;
+      min-height: 510px;
+      object-fit: cover;
+    }
+
+    .hero-badge {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(255,255,255,.94);
+      padding: 14px 17px;
+      border-radius: 18px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.12);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .trust {
+      background: var(--white);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+    }
+
+    .trust-item {
+      text-align: center;
+      padding: 25px 15px;
+      border-right: 1px solid var(--line);
+    }
+
+    .trust-item:last-child { border-right: 0; }
+    .trust-item strong { display: block; margin-bottom: 3px; }
+    .trust-item span { color: var(--muted); font-size: 13px; }
+
+    section { padding: 90px 0; }
+
+    .section-head {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 44px;
+    }
+
+    .section-head h2 {
+      font-size: clamp(34px, 5vw, 52px);
+      margin-bottom: 13px;
+    }
+
+    .section-head p { color: var(--muted); }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 20px;
+    }
+
+    .service-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: .25s ease;
+      box-shadow: 0 8px 25px rgba(55,22,37,.04);
+    }
+
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow);
+    }
+
+    .service-card img {
+      width: 100%;
+      height: 205px;
+      object-fit: cover;
+    }
+
+    .service-body { padding: 22px; }
+    .service-body h3 { font-size: 25px; margin-bottom: 8px; }
+    .service-body p { color: var(--muted); font-size: 14px; margin-bottom: 17px; }
+
+    .text-link {
+      color: var(--rose);
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .about {
+      background: #fff;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      align-items: center;
+      gap: 70px;
+    }
+
+    .about-image {
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .about-image img { width: 100%; height: 520px; object-fit: cover; }
+
+    .about-copy h2 {
+      font-size: clamp(37px, 5vw, 57px);
+      margin-bottom: 18px;
+    }
+
+    .about-copy p { color: var(--muted); margin-bottom: 18px; }
+
+    .checks {
+      list-style: none;
+      display: grid;
+      gap: 12px;
+      margin: 25px 0;
+    }
+
+    .checks li {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      font-weight: 700;
+    }
+
+    .check {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      display: inline-grid;
+      place-items: center;
+      background: var(--rose-soft);
+      color: var(--rose);
+      flex: 0 0 auto;
+    }
+
+    .gallery {
+      background: #fdf7f8;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 15px;
+    }
+
+    .gallery-item {
+      position: relative;
+      height: 300px;
+      overflow: hidden;
+      border-radius: 20px;
+      background: #eee;
+      cursor: pointer;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .5s ease;
+    }
+
+    .gallery-item:hover img { transform: scale(1.06); }
+
+    .gallery-label {
+      position: absolute;
+      left: 14px;
+      bottom: 14px;
+      background: rgba(255,255,255,.9);
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .manager {
+      background: #fff;
+    }
+
+    .manager-box {
+      background: linear-gradient(135deg,#fff6f9,#fffdf9);
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      padding: 34px;
+      box-shadow: var(--shadow);
+    }
+
+    .manager-intro {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 25px;
+      margin-bottom: 25px;
+    }
+
+    .manager-intro h2 { font-size: 37px; margin-bottom: 8px; }
+    .manager-intro p { color: var(--muted); max-width: 650px; }
+
+    .admin-login {
+      display: flex;
+      gap: 10px;
+      max-width: 520px;
+    }
+
+    .field {
+      width: 100%;
+      padding: 13px 15px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: white;
+      outline: none;
+    }
+
+    .field:focus {
+      border-color: var(--rose);
+      box-shadow: 0 0 0 4px rgba(143,49,88,.08);
+    }
+
+    .admin-panel {
+      display: none;
+      border-top: 1px solid var(--line);
+      padding-top: 25px;
+    }
+
+    .admin-panel.active { display: block; }
+
+    .upload-area {
+      border: 2px dashed #dcb9c6;
+      background: white;
+      border-radius: 20px;
+      padding: 28px;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .upload-area input { margin-top: 15px; }
+
+    .uploaded-grid {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 14px;
+    }
+
+    .uploaded-card {
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      overflow: hidden;
+      background: white;
+    }
+
+    .uploaded-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+
+    .uploaded-card-bottom {
+      padding: 9px;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .uploaded-card-bottom small {
+      color: var(--muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .delete-btn {
+      border: 0;
+      cursor: pointer;
+      background: #fff0f2;
+      color: #a52743;
+      border-radius: 8px;
+      padding: 6px 8px;
+      font-weight: 800;
+    }
+
+    .notice {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    .contact {
+      background: var(--rose-dark);
+      color: white;
+    }
+
+    .contact .section-head p { color: #eadce2; }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: .75fr 1.25fr;
+      gap: 50px;
+      align-items: start;
+    }
+
+    .contact-details {
+      display: grid;
+      gap: 20px;
+    }
+
+    .contact-detail {
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 18px;
+      background: rgba(255,255,255,.05);
+    }
+
+    .contact-detail span {
+      display: block;
+      color: #eacbd8;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+
+    .booking {
+      background: white;
+      color: var(--ink);
+      border-radius: 28px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+    }
+
+    .booking h3 { font-size: 32px; margin-bottom: 20px; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2,1fr);
+      gap: 14px;
+    }
+
+    .form-group { display: grid; gap: 7px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label { font-size: 12px; font-weight: 800; color: #62535a; }
+
+    textarea.field { min-height: 115px; resize: vertical; }
+
+    footer {
+      background: #3d1727;
+      color: #e8d8df;
+      padding: 25px 0;
+      font-size: 13px;
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .footer-logo { color: white; font-family: "Playfair Display",serif; font-size: 22px; }
+
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 999;
+      background: #251b20;
+      color: white;
+      padding: 13px 17px;
+      border-radius: 13px;
+      box-shadow: var(--shadow);
+      transform: translateY(130px);
+      opacity: 0;
+      transition: .3s ease;
+      max-width: 330px;
+      font-size: 13px;
+    }
+
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      background: rgba(20,8,14,.78);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal.active { display: flex; }
+
+    .modal-content {
+      position: relative;
+      max-width: 950px;
+      width: 100%;
+      max-height: 90vh;
+    }
+
+    .modal-content img {
+      width: 100%;
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: 18px;
+      background: #111;
+    }
+
+    .modal-close {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 50%;
+      background: white;
+      color: #222;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .nav-links.mobile-open {
+        display: flex;
+        position: absolute;
+        top: 76px;
+        left: 0;
+        right: 0;
+        background: var(--cream);
+        padding: 22px;
+        flex-direction: column;
+        align-items: flex-start;
+        border-bottom: 1px solid var(--line);
+      }
+      .menu-btn { display: block; }
+      .nav > .btn-primary { display: none; }
+      .hero-grid, .about-grid, .contact-grid { grid-template-columns: 1fr; }
+      .hero-image { min-height: 420px; }
+      .hero-image img { min-height: 420px; }
+      .services-grid { grid-template-columns: repeat(2,1fr); }
+      .uploaded-grid { grid-template-columns: repeat(3,1fr); }
+    }
+
+    @media (max-width: 620px) {
+      .container { width: min(100% - 28px, 1160px); }
+      section { padding: 65px 0; }
+      .announcement { font-size: 10px; }
+      .hero { padding-top: 48px; }
+      .hero-image { min-height: 350px; }
+      .hero-image img { min-height: 350px; }
+      .trust-grid { grid-template-columns: 1fr; }
+      .trust-item { border-right: 0; border-bottom: 1px solid var(--line); }
+      .trust-item:last-child { border-bottom: 0; }
+      .services-grid, .gallery-grid { grid-template-columns: 1fr; }
+      .gallery-item { height: 330px; }
+      .about-image img { height: 380px; }
+      .manager-box { padding: 22px; }
+      .manager-intro { flex-direction: column; }
+      .admin-login { flex-direction: column; }
+      .uploaded-grid { grid-template-columns: repeat(2,1fr); }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-group.full { grid-column: auto; }
+      .booking { padding: 21px; }
+      .footer-row { flex-direction: column; text-align: center; }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="announcement">MAKE EVERY MOMENT SPECIAL · SURPRISE MAMA · ELURU</div>
 
-<div class="app">
+  <header>
+    <div class="container nav">
+      <a class="logo" href="#home">Surprise <span>Mama.</span></a>
 
-<!-- SIDEBAR -->
+      <nav class="nav-links" id="navLinks">
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#about">About</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#contact">Contact</a>
+      </nav>
 
-<aside class="sidebar">
+      <a class="btn btn-primary" href="#contact">Plan Your Surprise</a>
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+    </div>
+  </header>
 
-<div class="logo">
+  <main>
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">Thoughtful gifts. Beautiful memories.</div>
+          <h1>Make them smile. Make it unforgettable.</h1>
+          <p class="hero-copy">
+            From birthday surprises and beautiful bouquets to premium gifts,
+            chocolate hampers and celebrations, Surprise Mama helps you turn
+            special moments into memories.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#contact">Book a Surprise →</a>
+            <a class="btn btn-light" href="#gallery">View Our Work</a>
+          </div>
+        </div>
 
-    <div class="logo-circle">◉</div>
+        <div class="hero-image">
+          <img src="https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=1200&q=85" alt="Birthday celebration">
+          <div class="hero-badge">✨ Celebrations made special in Eluru</div>
+        </div>
+      </div>
+    </section>
 
-    <div>
-        <h1>JARVIS</h1>
-        <span>Personal AI Assistant</span>
+    <div class="trust">
+      <div class="container trust-grid">
+        <div class="trust-item">
+          <strong>Thoughtful Gifts</strong>
+          <span>Picked with care</span>
+        </div>
+        <div class="trust-item">
+          <strong>Beautiful Celebrations</strong>
+          <span>Planned around your moment</span>
+        </div>
+        <div class="trust-item">
+          <strong>Proudly in Eluru</strong>
+          <span>Local service with a personal touch</span>
+        </div>
+      </div>
     </div>
 
-</div>
-
-<div class="nav">
-
-<button class="active">🏠 <span>Home</span></button>
-
-<button onclick="startVoice()">🎙️ <span>Voice</span></button>
-
-<button onclick="focusChat()">💬 <span>Chat</span></button>
-
-<button onclick="notify('Code Assistant activated')">
-💻 <span>Code Assistant</span>
-</button>
-
-<button>🖥️ <span>Screen Analysis</span></button>
-
-<button>📁 <span>Files & Docs</span></button>
-
-<button>🛠️ <span>Tools</span></button>
-
-<button>📅 <span>Calendar</span></button>
-
-<button>🔔 <span>Reminders</span></button>
-
-<button>⚙️ <span>Settings</span></button>
-
-</div>
-
-<div class="sync">
-
-<div class="sync-title">
-SYNCED DEVICES
-</div>
-
-<div class="device">
-🖥️ Windows 10
-<span class="online">●</span>
-</div>
-
-<div class="device">
-📱 POCO M6 5G
-<span class="online">●</span>
-</div>
-
-</div>
-
-</aside>
-
-
-<!-- MAIN -->
-
-<main class="main">
-
-<div class="top">
-
-<div class="greeting">
-
-<h2>☀️ Good Morning, Sankar</h2>
-
-<p>How can I help you today?</p>
-
-<div class="telugu">
-మీకు ఏ సహాయం కావాలి?
-</div>
-
-</div>
-
-
-<div class="info">
-
-<div class="info-card">
-
-<div class="time" id="clock">
-02:49 PM
-</div>
-
-<div class="small" id="date">
-Sun, 13 Sep 2026
-</div>
-
-</div>
-
-<div class="info-card">
-
-☁️ <b>28°C</b>
-
-<div class="small">
-Partly Cloudy
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- JARVIS -->
-
-<section class="center">
-
-<div class="jarvis-core">
-
-<div class="ring"></div>
-<div class="ring"></div>
-<div class="ring"></div>
-
-
-<div class="core">
-
-<div class="jarvis-face">
-
-<div class="face-glow"></div>
-
-<div class="head">
-
-<div class="forehead"></div>
-
-<div class="eyes">
-
-<div class="eye left-eye">
-<span></span>
-</div>
-
-<div class="eye right-eye">
-<span></span>
-</div>
-
-</div>
-
-<div class="nose"></div>
-
-<div class="mouth">
-<span></span>
-</div>
-
-<div class="jaw"></div>
-
-</div>
-
-</div>
-
-<div class="core-name">
-JARVIS
-</div>
-
-</div>
-
-</div>
-
-
-<div class="voice-area">
-
-<button class="mic" onclick="startVoice()">
-🎙️
-</button>
-
-<div>
-Tap or say <b>"Hey Jarvis"</b>
-</div>
-
-<div class="listening" id="listening">
-🔵 Listening...
-</div>
-
-</div>
-
-</section>
-
-
-<!-- QUICK CARDS -->
-
-<section class="quick">
-
-<div class="card"
-onclick="notify('Code Assistant activated')">
-
-<div class="card-icon">💻</div>
-
-<h3>Code Assistant</h3>
-
-<p>
-Write, debug and explain code in any language.
-</p>
-
-</div>
-
-
-<div class="card"
-onclick="focusChat()">
-
-<div class="card-icon">💬</div>
-
-<h3>Ask Anything</h3>
-
-<p>
-Get answers, ideas and solutions.
-</p>
-
-</div>
-
-
-<div class="card">
-
-<div class="card-icon">📁</div>
-
-<h3>Files & Documents</h3>
-
-<p>
-Read and analyze your files.
-</p>
-
-</div>
-
-
-<div class="card">
-
-<div class="card-icon">✨</div>
-
-<h3>AI Tools</h3>
-
-<p>
-Use advanced AI features.
-</p>
-
-</div>
-
-</section>
-
-
-<!-- BOTTOM -->
-
-<section class="bottom">
-
-<div class="panel">
-
-<h3>🎙️ Voice Conversation</h3>
-
-<div class="message">
-<b>You:</b>
-Hey Jarvis, can you help me?
-</div>
-
-<div class="message">
-<b>Jarvis:</b>
-Sure Sankar. I'm ready to assist you.
-</div>
-
-</div>
-
-
-<div class="panel" id="chatPanel">
-
-<h3>💬 JARVIS Chat</h3>
-
-<div id="chatMessages">
-
-<div class="message">
-<b>JARVIS:</b>
-Hello Sankar! What would you like me to do?
-</div>
-
-</div>
-
-
-<div class="chat-box">
-
-<input
-id="chatInput"
-placeholder="Ask Jarvis anything..."
-onkeydown="if(event.key==='Enter')sendMessage()"
-/>
-
-<button onclick="sendMessage()">
-Send
-</button>
-
-</div>
-
-</div>
-
-</section>
-
-</main>
-
-</div>
-
-
-<script>
-
-/* CLOCK */
-
-function updateClock(){
-
-    const now = new Date();
-
-    document.getElementById("clock").textContent =
-        now.toLocaleTimeString([],{
-            hour:"2-digit",
-            minute:"2-digit"
-        });
-
-    document.getElementById("date").textContent =
-        now.toLocaleDateString([],{
-            weekday:"short",
-            day:"2-digit",
-            month:"short",
-            year:"numeric"
-        });
-}
-
-setInterval(updateClock,1000);
-updateClock();
-
-
-/* VOICE */
-
-function startVoice(){
-
-    const listening =
-        document.getElementById("listening");
-
-    listening.style.display="block";
-
-    if("speechSynthesis" in window){
-
-        const speech =
-            new SpeechSynthesisUtterance(
-                "Hello Sankar. I am Jarvis. How can I help you?"
-            );
-
-        speech.lang="en-IN";
-
-        window.speechSynthesis.speak(speech);
+    <section id="services">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">What we create</div>
+          <h2>Something special for every occasion.</h2>
+          <p>
+            Tell us the occasion, your idea and your budget. We'll help turn it
+            into a beautiful experience.
+          </p>
+        </div>
+
+        <div class="services-grid">
+          <article class="service-card">
+            <img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=900&q=80" alt="Birthday surprise">
+            <div class="service-body">
+              <h3>Birthday Surprises</h3>
+              <p>Creative birthday setups, surprise plans and memorable moments.</p>
+              <a class="text-link service-link" data-service="Birthday Surprise" href="#contact">Plan this →</a>
+            </div>
+          </article>
+
+          <article class="service-card">
+            <img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=900&q=80" alt="Flowers and bouquet">
+            <div class="service-body">
+              <h3>Flowers & Bouquets</h3>
+              <p>Fresh, elegant bouquets made for birthdays, love and celebrations.</p>
+              <a class="text-link service-link" data-service="Flowers & Bouquets" href="#contact">Plan this →</a>
+            </div>
+          </article>
+
+          <article class="service-card">
+            <img src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=900&q=80" alt="Gift box">
+            <div class="service-body">
+              <h3>Premium Gifts</h3>
+              <p>Thoughtfully selected gift boxes and personalized surprises.</p>
+              <a class="text-link service-link" data-service="Premium Gifts" href="#contact">Plan this →</a>
+            </div>
+          </article>
+
+          <article class="service-card">
+            <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80" alt="Chocolate cake">
+            <div class="service-body">
+              <h3>Chocolate Hampers</h3>
+              <p>Sweet hampers and delicious combinations prepared for your occasion.</p>
+              <a class="text-link service-link" data-service="Chocolate Hampers" href="#contact">Plan this →</a>
+            </div>
+          </article>
+
+          <article class="service-card">
+            <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=900&q=80" alt="Wedding celebration">
+            <div class="service-body">
+              <h3>Wedding & Anniversary</h3>
+              <p>Romantic gifts, decorations and celebration planning for milestones.</p>
+              <a class="text-link service-link" data-service="Wedding & Anniversary" href="#contact">Plan this →</a>
+            </div>
+          </article>
+
+          <article class="service-card">
+            <img src="https://images.unsplash.com/photo-1478146896981-b80fe463b330?auto=format&fit=crop&w=900&q=80" alt="Event management">
+            <div class="service-body">
+              <h3>Event Management</h3>
+              <p>From concept to execution, we help make your event feel effortless.</p>
+              <a class="text-link service-link" data-service="Event Management" href="#contact">Plan this →</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="about" id="about">
+      <div class="container about-grid">
+        <div class="about-image">
+          <img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?auto=format&fit=crop&w=1100&q=85" alt="Beautiful celebration">
+        </div>
+
+        <div class="about-copy">
+          <div class="eyebrow">About Surprise Mama</div>
+          <h2>We don't just deliver gifts. We create moments.</h2>
+          <p>
+            Surprise Mama is an Eluru-based gift and event service built around
+            one simple idea: make people feel special.
+          </p>
+          <p>
+            Whether it's a surprise birthday, a romantic gesture, a wedding
+            milestone or a custom gift, we help you plan the details so the
+            moment feels personal.
+          </p>
+
+          <ul class="checks">
+            <li><span class="check">✓</span> Personalized surprise ideas</li>
+            <li><span class="check">✓</span> Custom gifts and hampers</li>
+            <li><span class="check">✓</span> Local Eluru service</li>
+            <li><span class="check">✓</span> Event planning support</li>
+          </ul>
+
+          <a class="btn btn-primary" href="#contact">Let's Plan Something ✨</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="gallery" id="gallery">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Our gallery</div>
+          <h2>Moments we've helped make special.</h2>
+          <p>Replace these sample photos with your real Surprise Mama work using the Client Photo Manager below.</p>
+        </div>
+
+        <div class="gallery-grid" id="publicGallery">
+          <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=900&q=80" alt="Celebration">
+            <span class="gallery-label">Celebrations</span>
+          </div>
+          <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=900&q=80" alt="Flowers">
+            <span class="gallery-label">Flowers</span>
+          </div>
+          <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=900&q=80" alt="Gift">
+            <span class="gallery-label">Gifts</span>
+          </div>
+          <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80" alt="Cake">
+            <span class="gallery-label">Sweet Moments</span>
+          </div>
+          <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=900&q=80" alt="Wedding">
+            <span class="gallery-label">Weddings</span>
+          </div>
+          <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1478146896981-b80fe463b330?auto=format&fit=crop&w=900&q=80" alt="Event">
+            <span class="gallery-label">Events</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="manager" id="photo-manager">
+      <div class="container">
+        <div class="manager-box">
+          <div class="manager-intro">
+            <div>
+              <div class="eyebrow">Client Photo Manager</div>
+              <h2>Update the gallery yourself.</h2>
+              <p>
+                Use the private manager to add new photos to this website.
+                Added photos appear in the public gallery automatically.
+              </p>
+            </div>
+          </div>
+
+          <div class="admin-login">
+            <input class="field" type="password" id="adminPassword" placeholder="Enter admin password">
+            <button class="btn btn-primary" id="loginBtn" type="button">Open Manager</button>
+          </div>
+
+          <div class="admin-panel" id="adminPanel">
+            <div class="upload-area">
+              <strong>📸 Add new photos</strong>
+              <p class="notice">Select one or multiple JPG, PNG or WEBP images.</p>
+              <input id="photoInput" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+              <p class="notice">Tip: large photos are automatically resized/compressed for browser storage.</p>
+            </div>
+
+            <h3 style="margin-bottom:15px;">Uploaded Photos</h3>
+            <div class="uploaded-grid" id="uploadedGrid"></div>
+          </div>
+
+          <p class="notice">
+            Demo/local mode: photos are stored in this browser using localStorage.
+            They are not automatically uploaded to a central server. For a real
+            multi-device client CMS, connect this page to Supabase, Firebase or Cloudinary.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow" style="color:#eec4d4;">Let's create a moment</div>
+          <h2>Tell us what you're planning.</h2>
+          <p>Send your details and we'll open WhatsApp with a ready-to-send enquiry.</p>
+        </div>
+
+        <div class="contact-grid">
+          <div class="contact-details">
+            <div class="contact-detail">
+              <span>Visit us</span>
+              <strong>Low Bridge, 22B-3-2/1,<br>Powerpet, Eluru, Andhra Pradesh 534002</strong>
+            </div>
+
+            <div class="contact-detail">
+              <span>Call / WhatsApp</span>
+              <strong>080192 44255</strong>
+            </div>
+
+            <div class="contact-detail">
+              <span>What we do</span>
+              <strong>Gifts · Surprises · Bouquets · Hampers · Events</strong>
+            </div>
+          </div>
+
+          <div class="booking">
+            <h3>Plan your surprise</h3>
+
+            <form id="bookingForm">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="name">Your name *</label>
+                  <input class="field" id="name" required placeholder="Your name">
+                </div>
+
+                <div class="form-group">
+                  <label for="phone">Phone number *</label>
+                  <input class="field" id="phone" required type="tel" placeholder="10-digit number">
+                </div>
+
+                <div class="form-group">
+                  <label for="service">Service *</label>
+                  <select class="field" id="service" required>
+                    <option value="">Choose a service</option>
+                    <option>Birthday Surprise</option>
+                    <option>Flowers & Bouquets</option>
+                    <option>Premium Gifts</option>
+                    <option>Chocolate Hampers</option>
+                    <option>Wedding & Anniversary</option>
+                    <option>Event Management</option>
+                    <option>Custom Request</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="date">Event date</label>
+                  <input class="field" id="date" type="date">
+                </div>
+
+                <div class="form-group">
+                  <label for="budget">Approx. budget</label>
+                  <select class="field" id="budget">
+                    <option value="">Select budget</option>
+                    <option>Under ₹1,000</option>
+                    <option>₹1,000 – ₹2,500</option>
+                    <option>₹2,500 – ₹5,000</option>
+                    <option>₹5,000 – ₹10,000</option>
+                    <option>₹10,000+</option>
+                  </select>
+                </div>
+
+                <div class="form-group full">
+                  <label for="ideas">Tell us your idea</label>
+                  <textarea class="field" id="ideas" placeholder="Who is it for? What would you like to surprise them with?"></textarea>
+                </div>
+
+                <div class="form-group full">
+                  <button class="btn btn-primary" style="width:100%;" type="submit">Send Enquiry on WhatsApp →</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-row">
+      <div class="footer-logo">Surprise Mama.</div>
+      <div>© <span id="year"></span> Surprise Mama, Eluru. All rights reserved.</div>
+      <div>Made for memorable moments ✨</div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="modal" id="imageModal" aria-hidden="true">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose" aria-label="Close">×</button>
+      <img id="modalImage" src="" alt="Gallery image">
+    </div>
+  </div>
+
+  <script>
+    /*
+      =========================================================
+      SURPRISE MAMA WEBSITE SETTINGS
+      =========================================================
+      1. Change ADMIN_PASSWORD before giving the site to the client.
+      2. Replace BUSINESS_WHATSAPP with the business WhatsApp number.
+      3. For real multi-device photo uploads, connect a backend/cloud
+         storage service. localStorage is intentionally used here
+         so this single HTML file works without a server.
+    */
+
+    const ADMIN_PASSWORD = "Surprise@2026";
+    const BUSINESS_WHATSAPP = "919876543210"; // Replace with real WhatsApp number, country code + number, no +
+
+    const navLinks = document.getElementById("navLinks");
+    const menuBtn = document.getElementById("menuBtn");
+
+    menuBtn.addEventListener("click", () => {
+      navLinks.classList.toggle("mobile-open");
+      menuBtn.textContent = navLinks.classList.contains("mobile-open") ? "×" : "☰";
+    });
+
+    navLinks.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", () => {
+        navLinks.classList.remove("mobile-open");
+        menuBtn.textContent = "☰";
+      });
+    });
+
+    const toast = document.getElementById("toast");
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => toast.classList.remove("show"), 3000);
     }
 
-    setTimeout(()=>{
-        listening.style.display="none";
-    },4000);
-}
+    document.querySelectorAll(".service-link").forEach(link => {
+      link.addEventListener("click", () => {
+        const service = link.dataset.service;
+        setTimeout(() => {
+          document.getElementById("service").value = service;
+        }, 50);
+      });
+    });
 
+    // -------------------------------
+    // Booking -> WhatsApp
+    // -------------------------------
+    document.getElementById("bookingForm").addEventListener("submit", function(e) {
+      e.preventDefault();
 
-/* CHAT */
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const service = document.getElementById("service").value;
+      const date = document.getElementById("date").value || "Not specified";
+      const budget = document.getElementById("budget").value || "Not specified";
+      const ideas = document.getElementById("ideas").value.trim() || "No additional details";
 
-function focusChat(){
+      const message =
+`✨ *New Surprise Mama Enquiry*
 
-    const input =
-        document.getElementById("chatInput");
+👤 Name: ${name}
+📱 Phone: ${phone}
+🎁 Service: ${service}
+📅 Event Date: ${date}
+💰 Budget: ${budget}
 
-    input.focus();
+💡 Idea / Details:
+${ideas}`;
 
-    document
-        .getElementById("chatPanel")
-        .scrollIntoView({
-            behavior:"smooth"
+      const url = `https://wa.me/${BUSINESS_WHATSAPP}?text=${encodeURIComponent(message)}`;
+      window.open(url, "_blank");
+    });
+
+    // -------------------------------
+    // Gallery lightbox
+    // -------------------------------
+    function activateGalleryClicks() {
+      document.querySelectorAll(".gallery-item").forEach(item => {
+        if (item.dataset.bound === "1") return;
+        item.dataset.bound = "1";
+
+        item.addEventListener("click", () => {
+          const img = item.querySelector("img");
+          document.getElementById("modalImage").src = img.src;
+          document.getElementById("imageModal").classList.add("active");
+          document.getElementById("imageModal").setAttribute("aria-hidden", "false");
         });
-}
+      });
+    }
 
+    document.getElementById("modalClose").addEventListener("click", closeModal);
 
-function sendMessage(){
+    document.getElementById("imageModal").addEventListener("click", e => {
+      if (e.target.id === "imageModal") closeModal();
+    });
 
-    const input =
-        document.getElementById("chatInput");
+    function closeModal() {
+      document.getElementById("imageModal").classList.remove("active");
+      document.getElementById("imageModal").setAttribute("aria-hidden", "true");
+    }
 
-    const text =
-        input.value.trim();
+    // -------------------------------
+    // Client Photo Manager
+    // -------------------------------
+    const STORAGE_KEY = "surpriseMamaPhotos";
 
-    if(!text) return;
+    function getPhotos() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      } catch (error) {
+        return [];
+      }
+    }
 
-    const messages =
-        document.getElementById("chatMessages");
+    function savePhotos(photos) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(photos));
+    }
 
-    messages.innerHTML += `
-        <div class="message">
-            <b>You:</b> ${escapeHTML(text)}
+    document.getElementById("loginBtn").addEventListener("click", () => {
+      const password = document.getElementById("adminPassword").value;
+
+      if (password === ADMIN_PASSWORD) {
+        document.getElementById("adminPanel").classList.add("active");
+        renderUploadedPhotos();
+        showToast("Photo Manager opened successfully.");
+      } else {
+        showToast("Incorrect admin password.");
+      }
+    });
+
+    document.getElementById("adminPassword").addEventListener("keydown", e => {
+      if (e.key === "Enter") document.getElementById("loginBtn").click();
+    });
+
+    /*
+      Resize/compress images before localStorage.
+      This helps keep the demo usable with phone photos.
+    */
+    function compressImage(file, maxSize = 1600, quality = 0.82) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = event => {
+          const img = new Image();
+
+          img.onload = () => {
+            let width = img.width;
+            let height = img.height;
+
+            if (width > maxSize || height > maxSize) {
+              if (width >= height) {
+                height = Math.round(height * maxSize / width);
+                width = maxSize;
+              } else {
+                width = Math.round(width * maxSize / height);
+                height = maxSize;
+              }
+            }
+
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, width, height);
+
+            resolve(canvas.toDataURL("image/jpeg", quality));
+          };
+
+          img.onerror = reject;
+          img.src = event.target.result;
+        };
+
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    document.getElementById("photoInput").addEventListener("change", async function(e) {
+      const files = Array.from(e.target.files || []);
+      if (!files.length) return;
+
+      const photos = getPhotos();
+      let added = 0;
+
+      for (const file of files) {
+        try {
+          const dataUrl = await compressImage(file);
+          photos.push({
+            id: Date.now() + Math.random().toString(16).slice(2),
+            name: file.name,
+            data: dataUrl,
+            addedAt: new Date().toISOString()
+          });
+          added++;
+        } catch (error) {
+          console.error("Could not process image:", file.name, error);
+        }
+      }
+
+      try {
+        savePhotos(photos);
+        renderUploadedPhotos();
+        renderPublicUploadedPhotos();
+        showToast(`${added} photo${added === 1 ? "" : "s"} added to the gallery.`);
+      } catch (error) {
+        showToast("Storage limit reached. Try fewer or smaller photos.");
+        console.error(error);
+      }
+
+      e.target.value = "";
+    });
+
+    function renderUploadedPhotos() {
+      const grid = document.getElementById("uploadedGrid");
+      const photos = getPhotos();
+
+      if (!photos.length) {
+        grid.innerHTML = `<p class="notice">No client photos uploaded yet.</p>`;
+        return;
+      }
+
+      grid.innerHTML = photos.map(photo => `
+        <div class="uploaded-card">
+          <img src="${photo.data}" alt="${escapeHtml(photo.name)}">
+          <div class="uploaded-card-bottom">
+            <small title="${escapeHtml(photo.name)}">${escapeHtml(photo.name)}</small>
+            <button class="delete-btn" type="button" onclick="deletePhoto('${photo.id}')">Delete</button>
+          </div>
         </div>
-    `;
+      `).join("");
+    }
 
-    input.value="";
+    window.deletePhoto = function(id) {
+      const photos = getPhotos().filter(photo => photo.id !== id);
+      savePhotos(photos);
+      renderUploadedPhotos();
+      renderPublicUploadedPhotos();
+      showToast("Photo removed.");
+    };
 
-    setTimeout(()=>{
+    function renderPublicUploadedPhotos() {
+      const gallery = document.getElementById("publicGallery");
+      const photos = getPhotos();
 
-        messages.innerHTML += `
-            <div class="message">
-                <b>JARVIS:</b>
-                I received your message. AI backend can be connected here.
-            </div>
-        `;
+      document.querySelectorAll(".client-uploaded-gallery-item").forEach(el => el.remove());
 
-    },500);
-}
+      photos.forEach((photo, index) => {
+        const item = document.createElement("div");
+        item.className = "gallery-item client-uploaded-gallery-item";
 
+        const img = document.createElement("img");
+        img.src = photo.data;
+        img.alt = photo.name || `Client photo ${index + 1}`;
 
-/* SECURITY */
+        const label = document.createElement("span");
+        label.className = "gallery-label";
+        label.textContent = "Client Gallery";
 
-function escapeHTML(text){
+        item.appendChild(img);
+        item.appendChild(label);
+        gallery.appendChild(item);
+      });
 
-    const div =
-        document.createElement("div");
+      activateGalleryClicks();
+    }
 
-    div.textContent=text;
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
 
-    return div.innerHTML;
-}
+    // Initial load
+    document.getElementById("year").textContent = new Date().getFullYear();
+    renderPublicUploadedPhotos();
+    activateGalleryClicks();
 
-
-/* NOTIFICATION */
-
-function notify(message){
-
-    alert("JARVIS: "+message);
-}
-
-</script>
-
-<script src="/jarvis-voice.js"></script>
+    // Escape closes modal
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") closeModal();
+    });
+  </script>
 </body>
 </html>
